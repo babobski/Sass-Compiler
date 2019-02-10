@@ -644,6 +644,52 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		self.varCompletion();
 	}
 	
+	this._addDynamicToolbarButton = () => {
+		const db = require('ko/dynamic-button');
+
+		const view = () => {
+			var langs = ['Sass', 'SCSS'],
+				currView = ko.views.manager.currentView;
+			return currView &&  currView !== "New Tab" && langs.indexOf(currView.language) !== -1;
+		};
+		
+		const button = db.register({
+			label: "Sass Compiler",
+			tooltip: "Sass Compiler",
+			icon: "file-code-o",
+			events: [
+				"current_view_changed",
+			],
+			menuitems: [
+				{
+					label: "Enable File Watcher for current file",
+					name: "enable_file_watcher_for_current_file",
+					command: () => {
+						extensions.scss_compiler.scssEnableFileWatcher();
+					}
+				},
+				{
+					label: "Disable File Watcher",
+					name: "disable_file_watcher",
+					command: () => {
+						extensions.scss_compiler.scssDisableFileWatcher();
+					}
+				},
+				{
+					label: "Get $ variables",
+					name: "Get_variables",
+					command: () => {
+						extensions.scss_compiler.getVars();
+					}
+				},
+			],
+			isEnabled: () => {
+				return view();
+			},
+		});
+	};
+	self._addDynamicToolbarButton();
+	
 	window.addEventListener("komodo-post-startup", self._StartUpAction, false);
     window.addEventListener('file_saved', self.run_SCSS);
 	window.addEventListener("view_opened", self.getVars, false);
