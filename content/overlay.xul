@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://scss_compiler/skin/skin.css" type="text/css"?>
+<overlay id="scss_compiler" xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	<script type="application/x-javascript" src="chrome://scss_compiler/content/overlay.js" />
+	
+	<commandset id="allcommands">
+		<command id="Tasks:scssEnableFileWatcher" oncommand="extensions.scss_compiler.scssEnableFileWatcher();"/>
+		<command id="Tasks:scssDisableFileWatcher" oncommand="extensions.scss_compiler.scssDisableFileWatcher();"/>
+		<command id="Tasks:scssGetVars" oncommand="extensions.scss_compiler.getVars();"/>
+	</commandset>
+
+	<menupopup id="popup_tools">
+		<menu id="menu_" label="SCSS">
+		<menupopup id="menu_scss_popup">
+			<menuitem id="menu_scss_filewatcher_enable"
+				label="Enable File Watcher for current file"
+				observes="Tasks:scssEnableFileWatcher"
+				class="menu-iconic-wide">
+			</menuitem>
+			<menuitem id="menu_scss_filewatcher_disable"
+				label="Disable File Watcher"
+				observes="Tasks:scssDisableFileWatcher"
+				class="menu-iconic-wide">
+			</menuitem>
+			<menuitem id="menu_scss_get_vars"
+				label="Get $ variables"
+				observes="Tasks:scssGetVars"
+				class="menu-iconic-wide">
+			</menuitem>
+		</menupopup>
+		</menu>
+	</menupopup>
+
+	<menupopup id="editorContextMenu">
+		<menu id="menu_scss_context" label="SCSS">
+			<menupopup id="menu_scss_context_popup">
+				<menuitem id="menu_context_scss_filewatcher_enable"
+					label="Enable File Watcher for current file"
+					observes="Tasks:scssEnableFileWatcher"
+					class="menu-iconic-wide">
+				</menuitem>
+				<menuitem id="menu_context_scss_filewatcher_disable"
+					label="Disable File Watcher"
+					observes="Tasks:scssDisableFileWatcher"
+					class="menu-iconic-wide">
+				</menuitem>
+				<menuitem id="menu_context_scss_get_vars"
+					label="Get $ variables "
+					observes="Tasks:scssGetVars"
+					class="menu-iconic-wide">
+				</menuitem>
+			</menupopup>
+		</menu>
+	</menupopup>
+</overlay>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="less://komodo/skin/global/global.less" type="text/css"?>
+<?xml-stylesheet href="chrome://scss_compiler/skin/skin.css" type="text/css"?>
+
+<prefwindow id="scss_compiler-prefs"
+     title="scss compiler widget"
+	 xmlns:html="http://www.w3.org/1999/xhtml"
+	 width="300"
+	 height="140"
+	 hidechrome="true"
+     xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+	
+	
+	<prefpane id="scss_compiler-widget-pane" label="scss compiler" style="padding-top: 0;">
+		<preferences>
+			<preference id="pref_preserveExisting" name="extensions.scss_compiler.useFilewatcher" type="bool"/>
+			<preference id="pref_fileWatcher" name="extensions.scss_compiler.filewatcher" type="string"/>
+			<preference id="pref_replaceFolders" name="extensions.scss_compiler.replaceFolders" type="string"/>
+			<preference id="pref_replaceWith" name="extensions.scss_compiler.replaceWith" type="string"/>
+		</preferences>
+		
+		<titlebar id="scssCompileTitleBar" height="30" width="100%"  style="background: transparent;">
+			<label flex="1" style="text-align: center; padding: 7px 0; pointer-events: none;">
+				SCSS Compiler - Preferences
+			</label>
+		</titlebar>
+		
+		<label>
+			Folders to preplace with (seprate with ,)
+		</label>
+		<textbox label="Folders to preplace with (seprate with ,)" id="replaceFolders" preference="pref_replaceFolders" />
+		<label>
+			Replace with folder name
+		</label>
+		<textbox label="Replace with folder name" id="replaceWith" preference="pref_replaceWith" />
+		
+	</prefpane>
+	
+	
+
+</prefwindow>

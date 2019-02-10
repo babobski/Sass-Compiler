@@ -1,0 +1,6 @@
+content scss_compiler content/
+overlay chrome://komodo/content/komodo.xul chrome://scss_compiler/content/overlay.xul
+#overlay chrome://komodo/content/pref/pref-html.xul chrome://scss_compiler/content/pref-overlay.xul
+skin scss_compiler classic/1.0 skin/
+component {ba97920e-ce61-4fcf-8920-c817b761dc69} components/scss_autocomplete.js
+contract @mozilla.org/autocomplete/search;1?name=scss-autocomplete {ba97920e-ce61-4fcf-8920-c817b761dc69}

@@ -1,0 +1,65 @@
+/* Yes these 2 are not colors, doesnt warrant a rename at this time */
+/* Main Window */
+/* Elements */
+/* Special Elements */
+/* Widgets */
+/* SCC */
+/* Misc */
+#sass_wrapper {
+  background-color: #080808;
+  border-color: #080808;
+  padding: 0;
+  -moz-appearance: none;
+}
+#sass_wrapper #sass_auto {
+  max-width: 270px;
+  width: 270px;
+  margin: 0;
+  padding: 0;
+  background-color: #080808;
+  border-color: #080808;
+  cursor: none !important;
+  pointer-events: none !important;
+}
+#sass_wrapper #sass_auto * {
+  pointer-events: none !important;
+}
+#new-flescope-window .btnBox {
+  padding-top: 7px;
+  content: "\f099";
+  font-family: 'FontAwesome';
+}
+#statusbar-sass #statusbar-sass-label {
+  min-width: 70px;
+}
+#statusbar-sass #statusbar-sass-label > label {
+  background-image: url('chrome://sass/content/komodo-sass.png') !important;
+  background-repeat: no-repeat;
+  background-position: 0px 4px;
+  background-size: auto 13px;
+  padding-left: 25px;
+  padding-right: 5px;
+}
+prefwindow,
+prefwindow:root {
+  -moz-binding: url("chrome://global/content/bindings/preferences.xml#prefwindow");
+}
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > vbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > hbox,
+.pref-window:not(dialog):not(#prefWindow):not(#prefProjectsWindow) > box {
+  padding: 10px;
+}
+prefwindow > prefpane {
+  padding: 10px;
+}
+h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+prefwindow #sass-filescopes-pane tree {
+  height: 100%;
+}
+#fileScopes listcol {
+  padding-left: 2px;
+  padding-right: 2px;
+}
