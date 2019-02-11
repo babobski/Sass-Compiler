@@ -53,9 +53,8 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			
 			var replacePaths 	= prefs.getCharPref('replaceFolders'),
 				replaceWith 	= prefs.getCharPref('replaceWith'),
-				fileExReg 		= new RegExp(fileExt, 'g'),
+				fileExReg 		= new RegExp('\\' + fileExt, 'g'),
 				outputPath 		= path.replace(fileExReg, '.css'); // Replace file ext
-			
 			
 			if (replacePaths.length > 0 && replaceWith.length > 0) {
 				if (replacePaths.indexOf(',') !== -1) {
@@ -69,7 +68,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 				}
 			}
 			
-			run = run + path + ' ' + outputPath + ' --scss';
+			run = run + path + ' ' + outputPath + ' --scss --style compressed';
 			shell.exec(
 				run,
 				 {
@@ -150,13 +149,13 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			allVars,
 			output = [];
 
-		if (buffer.match(/\$[a-z0-9_-]+:/i)) {
-			bufferVars = buffer.match(/\$[a-z0-9_-]+:[^;,\r\n]+/gi);
+		if (buffer.match(/\$[\sa-z0-9_-\s]+:/i)) {
+			bufferVars = buffer.match(/\$[\sa-z0-9_-\s]+:[^;,\r\n]+/gi);
 			allVars = bufferVars.toString().split(',');
 
 			allVars.forEach(function(value, i) {
 				var VarAndValues 	= value.split(':'),
-					val 			= VarAndValues[0],
+					val 			= VarAndValues[0].replace(/\s+/, ''),
 					comm 			= VarAndValues[1].replace(/^\s+/, '');
 				if (!self._in_array(val, output)) {
 					output.push({
