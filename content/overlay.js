@@ -82,6 +82,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 						self._notifcation('SASS error compiling file', true);
 					} else {
 						self._notifcation('SASS compiled file');
+						self.pupblishFile(outputPath);
 						if (ko.uilayout.isPaneShown('workspace_bottom_area')) {
 							ko.uilayout.togglePane('workspace_bottom_area');
 						}
@@ -90,6 +91,20 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			);
 		}
 	};
+	
+	this.pupblishFile = (file) => {
+		var configurations = ko.publishing.getConfigurations();
+		
+		for (var i = 0; i < configurations.length; i++) {
+			var currConfig = configurations[i];
+			if (currConfig.matchesUri(file)) {
+				console.log('Matched $1');
+			}
+			if (currConfig.matchingRemoteUriFromLocalUri(file)) {
+				console.log('Matched $2');
+			}
+		}
+	}
 	
 	this.getVars = () => {
 		var d 		= ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
