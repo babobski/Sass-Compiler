@@ -196,7 +196,6 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		if (buffer.match(/@mixin\s+[^(]+\([^)]+\)/i)) {
 			bufferVars = buffer.match(matchPatern);
 			
-			//console.log(bufferVars);
 			
 			for (var i = 0; i < bufferVars.length; i++) {
 				var variable = bufferVars[i];
@@ -209,27 +208,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 						"comment": newMatches[2]
 					});
 				}
-				
-				//console.log(newMatches);
-				
-				//console.log(variable);
-				//console.log(newMatches);
 			}
-			
-			//allVars.forEach(function(value, i) {
-			//	var matches = allVars[i];
-			//	
-			//	console.log(matches);
-			//	//var VarAndValues 	= value.split(':'),
-			//	//	val 			= VarAndValues[0].replace(/\s+/, ''),
-			//	//	comm 			= VarAndValues[1].replace(/^\s+/, '');
-			//	//if (!self._in_array(val, output)) {
-			//	//	output.push({
-			//	//		"value": val,
-			//	//		"comment": comm
-			//	//	});
-			//	//}
-			//})
 
 			return JSON.stringify(output);
 		}
