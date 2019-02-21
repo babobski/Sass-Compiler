@@ -104,7 +104,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 				console.log('Matched $2');
 			}
 		}
-	}
+	};
 	
 	this.getVars = () => {
 		var d 		= ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
@@ -122,7 +122,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			}
 		}
 		return false;
-	}
+	};
 	
 	this._getVars = () => {
 
@@ -147,8 +147,10 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			outputSass = self._process_sass(path, base, buffer, file.ext);
 			
 			var allVars = self._getVariables(outputSass);
+			var mixins = self._getMixins(outputSass);
 			
 			sassData.vars = allVars;
+			sassData.mixins = mixins;
 			if (sassData.vars === undefined) {
 				sassData.vars = [ "$No_vars_found" ];
 				self._notifcation('SASS: No SASS vars found');
@@ -157,7 +159,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		} else {
 			return;
 		}
-	}
+	};
 	
 	this._getVariables = (buffer) => {
 		var bufferVars = '',
@@ -184,6 +186,55 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		}
 
 	}
+	
+	this._getMixins = (buffer) => {
+		var bufferVars = '',
+			allVars,
+			output = [],
+			matchPatern = /@mixin\s+([^(]+)\(([^)]+)\)/gi;
+
+		if (buffer.match(/@mixin\s+[^(]+\([^)]+\)/i)) {
+			bufferVars = buffer.match(matchPatern);
+			
+			//console.log(bufferVars);
+			
+			for (var i = 0; i < bufferVars.length; i++) {
+				var variable = bufferVars[i];
+					matchPatern = /@mixin\s+([^(]+)\(([^)]+)\)/gi;
+				var newMatches = matchPatern.exec(variable);
+				
+				if (newMatches.length === 3) {
+					output.push({
+						"value": newMatches[1],
+						"comment": newMatches[2]
+					});
+				}
+				
+				//console.log(newMatches);
+				
+				//console.log(variable);
+				//console.log(newMatches);
+			}
+			
+			//allVars.forEach(function(value, i) {
+			//	var matches = allVars[i];
+			//	
+			//	console.log(matches);
+			//	//var VarAndValues 	= value.split(':'),
+			//	//	val 			= VarAndValues[0].replace(/\s+/, ''),
+			//	//	comm 			= VarAndValues[1].replace(/^\s+/, '');
+			//	//if (!self._in_array(val, output)) {
+			//	//	output.push({
+			//	//		"value": val,
+			//	//		"comment": comm
+			//	//	});
+			//	//}
+			//})
+
+			return JSON.stringify(output);
+		}
+
+	};
 	
 	this._getContent = (doc) => {
 		var file 		= doc.file,
@@ -521,6 +572,52 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		}
 	}
 	
+	this._autocompleteMixins = () => {
+		var completions 	= sassData.mixins,
+			mainWindow 		= document.getElementById('komodo_main'),
+			popup 			= document.getElementById('sass_wrapper'),
+			autocomplete 	= document.createElement('textbox'),
+			currentView 	= ko.views.manager.currentView,
+			x 				= self._calculateXpos(),
+			y 				= self._calculateYpos();
+			
+		//console.log('showing autocomplete');
+		
+		if (popup == null) {
+			popup = document.createElement('tooltip');
+			popup.setAttribute('id', 'sass_wrapper');
+			autocomplete.setAttribute('id', 'sass_auto');
+			autocomplete.setAttribute('type', 'autocomplete');
+			autocomplete.setAttribute('showcommentcolumn', 'true');
+			autocomplete.setAttribute('autocompletesearch', 'scss-autocomplete');
+			autocomplete.setAttribute('highlightnonmatches', 'true');
+			autocomplete.setAttribute('ontextentered', 'insertSassVar()');
+			autocomplete.setAttribute('ontextreverted', 'abortSassVarCompletion()');
+			autocomplete.setAttribute('ignoreblurwhilesearching', 'true');
+			autocomplete.setAttribute('minresultsforpopup', '0');
+			autocomplete.setAttribute('onblur', 'blurSassComletion()');
+			autocomplete.setAttribute('onfocus', 'focusSassCompletion()');
+			popup.appendChild(autocomplete);
+
+			mainWindow.appendChild(popup);
+		}
+
+		if (typeof completions === 'undefined') {
+			self._notifcation('No mixins set, going find some!');
+			self._getVars();
+			return false;
+		}
+
+
+		if (completions.length > 0) {
+			autocomplete.setAttribute('autocompletesearchparam', completions);
+			popup.openPopup(mainWindow, "", x, y, false, false);
+			autocomplete.focus();
+			autocomplete.value = "$";
+			autocomplete.open = true;
+		}
+	};
+	
 	this._checkForSearch = () => {
 		if (search) {
 			self.getVars(true);
@@ -588,9 +685,8 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			}
 		}
 
-
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
-	}
+	};
 
 	
 	this._notifcation = ($message, error) => {
@@ -608,7 +704,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 				var options = {
 				body: $message,
 				icon: icon
-				}
+				};
 				var n = new Notification('SASS Compiler', options);
 				setTimeout(function(){
 					n.close.bind(n);
@@ -622,7 +718,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 					var options = {
 						 body: $message,
 						 icon: icon
-					 }
+					 };
 					 var n = new Notification('SASS Compiler', options);
 					setTimeout( () => {
 						n.close.bind(n);
@@ -656,7 +752,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 	
 	this._StartUpAction = function() {
 		self.varCompletion();
-	}
+	};
 	
 	this._addDynamicToolbarButton = () => {
 		const db = require('ko/dynamic-button');
