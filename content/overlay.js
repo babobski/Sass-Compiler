@@ -110,7 +110,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 				ko.publishing.forcePush(parser.pathToURI(sass));
 			}
 		}
-	}
+	};
 	
 	this.getVars = () => {
 		var d 		= ko.views.manager.currentView.document || ko.views.manager.currentView.koDoc,
@@ -128,7 +128,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			}
 		}
 		return false;
-	}
+	};
 	
 	this._getVars = () => {
 
@@ -165,7 +165,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		} else {
 			return;
 		}
-	}
+	};
 	
 	this._getVariables = (buffer) => {
 		var bufferVars = '',
@@ -670,9 +670,8 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			}
 		}
 
-
 		editor_pane.addEventListener('keypress', self._onKeyPress, true);
-	}
+	};
 
 	
 	this._notifcation = ($message, error) => {
@@ -690,7 +689,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 				var options = {
 				body: $message,
 				icon: icon
-				}
+				};
 				var n = new Notification('SASS Compiler', options);
 				setTimeout(function(){
 					n.close.bind(n);
@@ -704,7 +703,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 					var options = {
 						 body: $message,
 						 icon: icon
-					 }
+					 };
 					 var n = new Notification('SASS Compiler', options);
 					setTimeout( () => {
 						n.close.bind(n);
@@ -738,7 +737,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 	
 	this._StartUpAction = function() {
 		self.varCompletion();
-	}
+	};
 	
 	this._addDynamicToolbarButton = () => {
 		const db = require('ko/dynamic-button');
