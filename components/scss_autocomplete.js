@@ -1,6 +1,6 @@
 const Ci = Components.interfaces;
 
-const CLASS_ID = Components.ID("ba97920e-ce61-4fcf-8920-c817b761dc69"); // ← Change this
+const CLASS_ID = Components.ID("a58e68cc-567a-4356-b0df-35a9277fd57a"); // ← Change this
 const CLASS_NAME = "SCSS AutoComplete";
 const CONTRACT_ID = "@mozilla.org/autocomplete/search;1?name=scss-autocomplete";
 

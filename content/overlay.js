@@ -82,7 +82,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 						self._notifcation('SASS error compiling file', true);
 					} else {
 						self._notifcation('SASS compiled file');
-						self.pupblishFile(outputPath);
+						self.pupblishFile(outputPath, path);
 						if (ko.uilayout.isPaneShown('workspace_bottom_area')) {
 							ko.uilayout.togglePane('workspace_bottom_area');
 						}
@@ -92,16 +92,22 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		}
 	};
 	
-	this.pupblishFile = (file) => {
-		var configurations = ko.publishing.getConfigurations();
+	this.pupblishFile = (css, sass) => {
+		var configurations = ko.publishing.getConfigurations(),
+			parser = ko.uriparse;
 		
 		for (var i = 0; i < configurations.length; i++) {
-			var currConfig = configurations[i];
-			if (currConfig.matchesUri(file)) {
-				console.log('Matched $1');
-			}
-			if (currConfig.matchingRemoteUriFromLocalUri(file)) {
-				console.log('Matched $2');
+			var currConfig 	= configurations[i],
+				localUri 	= parser.displayPath(currConfig.local_uri);
+				
+			if (css.indexOf(localUri) !== -1) {
+				var path = parser.pathToURI(css),
+					cssMap = path + '.map';
+				
+				
+				ko.publishing.forcePush(path);
+				ko.publishing.forcePush(cssMap);
+				ko.publishing.forcePush(parser.pathToURI(sass));
 			}
 		}
 	}
@@ -147,8 +153,10 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			outputSass = self._process_sass(path, base, buffer, file.ext);
 			
 			var allVars = self._getVariables(outputSass);
+			var mixins = self._getMixins(outputSass);
 			
 			sassData.vars = allVars;
+			sassData.mixins = mixins;
 			if (sassData.vars === undefined) {
 				sassData.vars = [ "$No_vars_found" ];
 				self._notifcation('SASS: No SASS vars found');
@@ -184,6 +192,34 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		}
 
 	}
+	
+	this._getMixins = (buffer) => {
+		var bufferVars = '',
+			allVars,
+			output = [],
+			matchPatern = /@mixin\s+([^(]+)\(([^)]+)\)/gi;
+
+		if (buffer.match(/@mixin\s+[^(]+\([^)]+\)/i)) {
+			bufferVars = buffer.match(matchPatern);
+			
+			
+			for (var i = 0; i < bufferVars.length; i++) {
+				var variable = bufferVars[i];
+					matchPatern = /@mixin\s+([^(]+)\(([^)]+)\)/gi;
+				var newMatches = matchPatern.exec(variable);
+				
+				if (newMatches.length === 3) {
+					output.push({
+						"value": newMatches[1],
+						"comment": newMatches[2]
+					});
+				}
+			}
+
+			return JSON.stringify(output);
+		}
+
+	};
 	
 	this._getContent = (doc) => {
 		var file 		= doc.file,
@@ -520,6 +556,52 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 			autocomplete.open = true;
 		}
 	}
+	
+	this._autocompleteMixins = () => {
+		var completions 	= sassData.mixins,
+			mainWindow 		= document.getElementById('komodo_main'),
+			popup 			= document.getElementById('sass_wrapper'),
+			autocomplete 	= document.createElement('textbox'),
+			currentView 	= ko.views.manager.currentView,
+			x 				= self._calculateXpos(),
+			y 				= self._calculateYpos();
+			
+		//console.log('showing autocomplete');
+		
+		if (popup == null) {
+			popup = document.createElement('tooltip');
+			popup.setAttribute('id', 'sass_wrapper');
+			autocomplete.setAttribute('id', 'sass_auto');
+			autocomplete.setAttribute('type', 'autocomplete');
+			autocomplete.setAttribute('showcommentcolumn', 'true');
+			autocomplete.setAttribute('autocompletesearch', 'scss-autocomplete');
+			autocomplete.setAttribute('highlightnonmatches', 'true');
+			autocomplete.setAttribute('ontextentered', 'insertSassVar()');
+			autocomplete.setAttribute('ontextreverted', 'abortSassVarCompletion()');
+			autocomplete.setAttribute('ignoreblurwhilesearching', 'true');
+			autocomplete.setAttribute('minresultsforpopup', '0');
+			autocomplete.setAttribute('onblur', 'blurSassComletion()');
+			autocomplete.setAttribute('onfocus', 'focusSassCompletion()');
+			popup.appendChild(autocomplete);
+
+			mainWindow.appendChild(popup);
+		}
+
+		if (typeof completions === 'undefined') {
+			self._notifcation('No mixins set, going find some!');
+			self._getVars();
+			return false;
+		}
+
+
+		if (completions.length > 0) {
+			autocomplete.setAttribute('autocompletesearchparam', completions);
+			popup.openPopup(mainWindow, "", x, y, false, false);
+			autocomplete.focus();
+			autocomplete.value = "$";
+			autocomplete.open = true;
+		}
+	};
 	
 	this._checkForSearch = () => {
 		if (search) {
