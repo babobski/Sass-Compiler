@@ -68,7 +68,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 				}
 			}
 			
-			run = run + path + ' ' + outputPath + ' --scss --style compressed';
+			run = run + path + ' ' + outputPath + ' --style compressed';
 			shell.exec(
 				run,
 				 {
