@@ -82,7 +82,7 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 						self._notifcation('SASS error compiling file', true);
 					} else {
 						self._notifcation('SASS compiled file');
-						self.pupblishFile(outputPath);
+						self.pupblishFile(outputPath, path);
 						if (ko.uilayout.isPaneShown('workspace_bottom_area')) {
 							ko.uilayout.togglePane('workspace_bottom_area');
 						}
@@ -92,16 +92,22 @@ if (typeof(extensions.scss_compiler) === 'undefined') extensions.scss_compiler =
 		}
 	};
 	
-	this.pupblishFile = (file) => {
-		var configurations = ko.publishing.getConfigurations();
+	this.pupblishFile = (css, sass) => {
+		var configurations = ko.publishing.getConfigurations(),
+			parser = ko.uriparse;
 		
 		for (var i = 0; i < configurations.length; i++) {
-			var currConfig = configurations[i];
-			if (currConfig.matchesUri(file)) {
-				console.log('Matched $1');
-			}
-			if (currConfig.matchingRemoteUriFromLocalUri(file)) {
-				console.log('Matched $2');
+			var currConfig 	= configurations[i],
+				localUri 	= parser.displayPath(currConfig.local_uri);
+				
+			if (css.indexOf(localUri) !== -1) {
+				var path = parser.pathToURI(css),
+					cssMap = path + '.map';
+				
+				
+				ko.publishing.forcePush(path);
+				ko.publishing.forcePush(cssMap);
+				ko.publishing.forcePush(parser.pathToURI(sass));
 			}
 		}
 	};
